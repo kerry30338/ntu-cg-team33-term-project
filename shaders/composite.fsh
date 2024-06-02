@@ -2,25 +2,28 @@
 
 #include "library.glsl"
 
+// Configurations
+const float sunPathRotation = -40.0;
+
+// Varyings
 varying vec2 texcoord;
 
-// Unused varying
-//varying vec3 sunVec;
-
+// Uniforms
 uniform sampler2D gcolor;
 uniform sampler2D gnormal;
 uniform sampler2D depthtex0;
+
+uniform sampler2D shadowcolor0;
 uniform sampler2D shadowtex0;
+uniform sampler2D shadowtex1;
+
+uniform mat4 gbufferModelView;
 uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelViewInverse;
-uniform mat4 gbufferModelView;
 uniform mat4 shadowModelView;
 uniform mat4 shadowProjection;
-uniform vec3 sunPosition;
-const float sunPathRotation = -40.0;
 
-uniform sampler2D shadowtex1;
-uniform sampler2D shadowcolor0;
+uniform vec3 sunPosition;
 
 float visibility(in sampler2D shadowMap, in vec3 samplecoord) {
 	float depth = texture2D(shadowMap, samplecoord.xy).x;
@@ -54,12 +57,15 @@ vec3 getShadow(in float depth) {
 
 void main() {
 	vec3 albedo = texture2D(gcolor, texcoord).rgb;
-	vec3 sunVec = normalize(sunPosition);
+	
+	vec3 L = normalize(sunPosition);
+	vec3 N = normalize(texture2D(gnormal, texcoord)).xyz;
+
 	vec3 sunLight = vec3(1.0);
 	float depth = texture2D(depthtex0, texcoord).x;
-	vec3 N = normalize(texture2D(gnormal, texcoord)).xyz;
+
 	vec3 ambient = sunLight * albedo;
-	vec3 diffuse = sunLight * clamp(dot(sunVec, N), 0.0, 1.0) * albedo;
+	vec3 diffuse = sunLight * clamp(dot(L, N), 0.0, 1.0) * albedo;
 
 	vec3 color = vec3(0.0);
 	bool sky = (depth >= 1.0);
