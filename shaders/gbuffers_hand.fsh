@@ -29,8 +29,10 @@ vec4 clampAll4(vec4 v, float min, float max) {
 	return vec4(clamp(v.r, min, max), clamp(v.g, min, max), clamp(v.b, min, max), clamp(v.a, min, max));
 }
 
-vec4 calcHandHeldLight(vec4 color) {
+vec4 calcHandHeldLight() {
 	// V, N, L, H
+	vec4 color = texture2D(texture, texcoord) * glcolor;
+
 	vec3 V = -normalize(vertex_view.xyz);
 
 	vec3 N = normalize(normal.xyz);
@@ -52,10 +54,10 @@ vec4 calcHandHeldLight(vec4 color) {
 
 	float handLightLevel = float((heldBlockLightValue > heldBlockLightValue2) ? heldBlockLightValue : heldBlockLightValue2);
 
-	// color_handLight * clamp(handLightLevel - length(-vertex_view.xyz)) / 15.0;
-	// handLightLevel * (color_handLight * (1.0 / length(-vertex_view.xyz)))
+	// (color_handLight * clamp(handLightLevel - length(-vertex_view.xyz), 0.0, 15.0) / 15.0)
+	// color_handLight * (handLightLevel * (1.0 / length(-vertex_view.xyz)))
 
-	vec4 finalHandHeldLight = clampAll4(vec4((handLightLevel * (color_handLight * (1.0 / length(-vertex_view.xyz)))).rgb, 1.0), 0.0, 1.0);
+	vec4 finalHandHeldLight = clampAll4(vec4((color_handLight * clamp(handLightLevel - length(-vertex_view.xyz), 0.0, 15.0) / 15.0).rgb, 1.0), 0.0, 1.0);
 
 	color *= finalHandHeldLight;
 
@@ -64,10 +66,10 @@ vec4 calcHandHeldLight(vec4 color) {
 
 void main() {
 	vec4 color = texture2D(texture, texcoord) * glcolor;
-	color *= texture2D(lightmap, lmcoord) + calcHandHeldLight(color);
+	color *= texture2D(lightmap, lmcoord);
 
 /* DRAWBUFFERS:027 */
 	gl_FragData[0] = color; //gcolor
 	gl_FragData[1] = vec4(normal * 0.5 + 0.5, 1.0);
-	gl_FragData[2] = texture2D(lightmap, lmcoord) + calcHandHeldLight(color);
+	gl_FragData[2] = calcHandHeldLight(); // extralight
 }
