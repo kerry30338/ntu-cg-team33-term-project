@@ -17,6 +17,8 @@ uniform sampler2D shadowcolor0;
 uniform sampler2D shadowtex0;
 uniform sampler2D shadowtex1;
 
+uniform sampler2D colortex7;
+
 uniform mat4 gbufferModelView;
 uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelViewInverse;
@@ -54,7 +56,6 @@ vec3 getShadow(in float depth) {
 	return colorShadow(samplecoord);
 }
 
-
 void main() {
 	vec3 albedo = texture2D(gcolor, texcoord).rgb;
 	
@@ -74,7 +75,13 @@ void main() {
 		color = albedo;
 	}
 	else {
-		color = 0.3 * ambient + 0.7 * diffuse * getShadow(depth);		
+		color = 0.3 * ambient + 0.7 * diffuse * getShadow(depth);
 	}
+
+	vec4 extraLight = texture2D(colortex7, texcoord);
+	if(extraLight != vec4(0.0)) {
+		color += extraLight.rgb;
+	}
+
 	gl_FragData[0] = vec4(color, 1.0); //gcolor
 }
