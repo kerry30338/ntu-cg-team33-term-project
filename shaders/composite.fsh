@@ -79,10 +79,10 @@ void main() {
 		color = 0.3 * ambient + 0.9 * diffuse * getShadow(depth);		
 	}
 
-	vec4 extraLight = texture2D(colortex7, texcoord);
-	if(extraLight != vec4(0.0)) {
-		color += extraLight.rgb;
-	}
+	// vec4 extraLight = texture2D(colortex7, texcoord);
+	// if(extraLight != vec4(0.0)) {
+	// 	color += extraLight.rgb;
+	// }
 
 	gl_FragData[0] = vec4(color, 1.0); //gcolor
 }
