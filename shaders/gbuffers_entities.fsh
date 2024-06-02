@@ -27,7 +27,7 @@ void main() {
 	vec4 color_ori = texture2D(texture, texcoord) * glcolor;
 	vec4 color = color_ori;
 	color.rgb = mix(color.rgb, entityColor.rgb, entityColor.a);
-	color *= getLight(lmcoord);  // texture2D(lightmap, lmcoord);
+	color *= texture2D(lightmap, lmcoord); // getLight(lmcoord);  // 
 
 /* DRAWBUFFERS:027 */
 	gl_FragData[0] = color; //gcolor
