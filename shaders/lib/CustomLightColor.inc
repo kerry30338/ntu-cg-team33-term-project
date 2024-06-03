@@ -25,3 +25,14 @@ vec4 getLight(vec2 light) {
 
 	return vec4(adjustedCoord.x * torchLightColor + adjustedCoord.y * skyLightColor, 1.0);
 }
+
+vec2 calcTorchSkyWeights(vec2 lmcoord){
+	// lmcoord: x -> torch, y -> sky
+	// use sigmoid to approximate minecraft lighting properties: max(torch, sky)
+	float torchDominantFactor = 3.0;
+
+	float torch =  1.0 / (1.0 + exp(-(torchDominantFactor * lmcoord.x - lmcoord.y)));
+	float sky = 1.0 - torch;
+
+	return vec2(torch, sky);
+}
