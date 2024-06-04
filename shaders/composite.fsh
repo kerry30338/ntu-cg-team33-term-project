@@ -5,6 +5,9 @@
 // Configurations
 const float sunPathRotation = -40.0;
 
+const int RGBA16F = 1;
+const int glcolorFormat = RGBA16F;
+
 // Varyings
 varying vec2 texcoord;
 
@@ -63,7 +66,7 @@ void main() {
 	vec4 normal = texture2D(gnormal, texcoord);
 	vec3 N = normalize(normal.xyz * 2.0 - 1.0);
 
-	vec3 sunLight = vec3(1.0, 1.0, 1.0);
+	vec3 sunLight = vec3(2.0, 2.0, 2.0);
 	float depth = texture2D(depthtex0, texcoord).x;
 
 	vec3 ambient = sunLight * albedo;
@@ -76,11 +79,11 @@ void main() {
 		color = albedo;
 	}
 	else {
-		color = 0.3 * ambient + 0.9 * diffuse * getShadow(depth);		
+		color = 0.2 * ambient + 0.8 * diffuse * getShadow(depth);		
 	}
 	
 	// add hand held light
-	color += texture2D(colortex7, texcoord).rgb;
+	color += 0.5 * texture2D(colortex7, texcoord).rgb;
 
 	gl_FragData[0] = vec4(color, 1.0); //gcolor
 }

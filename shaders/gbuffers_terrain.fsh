@@ -28,7 +28,7 @@ void main() {
 
 	vec2 lightWeight = calcTorchSkyWeights(lmcoord);
 
-/* DRAWBUFFERS:027 */
+/* DRAWBUFFERS: 027 */
 	gl_FragData[0] = color * lightWeight.y; // -> gcolor
 	gl_FragData[1] = vec4(normal * 0.5 + 0.5, 1.0);
 	gl_FragData[2] = calcHandHeldLight(color_ori, vertex_view, normal, float(intMax(heldBlockLightValue, heldBlockLightValue2))) + color * lightWeight.x; // -> colortex7
