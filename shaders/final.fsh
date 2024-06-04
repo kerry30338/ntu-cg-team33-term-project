@@ -31,9 +31,9 @@ void main() {
     const float gamma = 1.8;
     vec3 color = texture2D(gcolor, texcoord).rgb;
     // Reinhard tonemap
-    color = reinhardTonemap(color);
+    // color = reinhardTonemap(color);
     // Uncharted2Tonemap
-    //color = Uncharted2Tonemap(max(color * TonemapExposureBias, 0.0)) / Uncharted2Tonemap(vec3(TonemapMaxWhite));
+    color = Uncharted2Tonemap(max(color * TonemapExposureBias, 0.0)) / Uncharted2Tonemap(vec3(TonemapMaxWhite));
     color = pow(color, vec3(1.0/gamma));
     gl_FragColor = vec4(color, 1.0);
 }
