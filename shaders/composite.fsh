@@ -29,6 +29,8 @@ uniform mat4 shadowModelView;
 uniform mat4 shadowProjection;
 
 uniform vec3 sunPosition;
+uniform vec3 moonPosition;
+uniform int worldTime;
 
 float visibility(in sampler2D shadowMap, in vec3 samplecoord) {
 	float depth = texture2D(shadowMap, samplecoord.xy).x;
@@ -63,14 +65,22 @@ void main() {
 	vec3 albedo = texture2D(gcolor, texcoord).rgb;
 	
 	vec3 L = normalize(sunPosition);
-	vec4 normal = texture2D(gnormal, texcoord);
-	vec3 N = normalize(normal.xyz * 2.0 - 1.0);
+	vec3 sunVec = normalize(sunPosition);
+	vec3 moonVec = normalize(moonPosition);
+	vec3 normal = normalize(texture2D(gnormal, texcoord).xyz * 2.0 - 1.0);
 
-	vec3 sunLight = vec3(2.0, 2.0, 2.0);
+	vec3 sunLight = vec3(1.0 - 0.5 * abs(worldTime*1.0-6000.0)/6000.0, 1.0 - 0.7 * abs(worldTime*1.0-6000.0)/6000.0, 1.0 - abs(worldTime*1.0-6000.0)/6000.0);
+	vec3 moonLight = vec3(0.2, 0.2, 0.2);
 	float depth = texture2D(depthtex0, texcoord).x;
 
 	vec3 ambient = sunLight * albedo;
-	vec3 diffuse = sunLight * clamp(dot(L, N), 0.0, 1.0) * albedo;
+	vec3 diffuse = albedo;
+	if (0 <= worldTime && worldTime < 12000) {
+		diffuse *= sunLight * clamp(dot(sunVec, normal), 0.0, 1.0);
+	}
+	else {
+		diffuse *= moonLight * clamp(dot(moonVec, normal), 0.0, 1.0);
+	}
 
 	vec3 color = vec3(0.0);
 	bool sky = (depth >= 1.0);
@@ -79,7 +89,7 @@ void main() {
 		color = albedo;
 	}
 	else {
-		color = 0.2 * ambient + 0.8 * diffuse * getShadow(depth);		
+		color = 0.1 * ambient + 0.9 * diffuse * getShadow(depth);		
 	}
 	
 	// add hand held light
