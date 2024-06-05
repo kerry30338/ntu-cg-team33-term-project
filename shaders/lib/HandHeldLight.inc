@@ -42,14 +42,14 @@ vec4 calcHandHeldLight(vec4 color, vec4 vertex_view, vec3 normal, float handLigh
 	float cos_specular = dot(N, H);
 	vec3 color_specular = (cos_specular > 0.0) ? vec3(cos_specular * Ks) : vec3(0.0);
 
-	vec4 color_handLight = vec4((color_diffuse + color_specular) * HANDHELDLIGHTCOLOR.rgb, 1.0);
+	vec4 color_handLight = vec4(color_diffuse + color_specular, 1.0);
 
 	// float handLightLevel = float((heldBlockLightValue > heldBlockLightValue2) ? heldBlockLightValue : heldBlockLightValue2);
 
     // 2 type of lighting: 1st darker, 2nd brighter
 	// (color_handLight * clamp(handLightLevel - length(-vertex_view.xyz), 0.0, 15.0) / 15.0)
 	// (color_handLight * (handLightLevel * (1.0 / length(-vertex_view.xyz))))
-	vec4 finalHandHeldLight = clampAll4(vec4((color_handLight * clamp(handLightLevel - length(-vertex_view.xyz), 0.0, 15.0) / 15.0).rgb, 1.0), 0.0, 1.0);
+	vec4 finalHandHeldLight = HANDHELDLIGHTCOLOR * clampAll4(vec4((color_handLight * clamp(handLightLevel - length(-vertex_view.xyz), 0.0, 15.0) / 15.0).rgb, 1.0), 0.0, 1.0);
 
 	color *= 0.6 * finalHandHeldLight;
 
@@ -87,12 +87,12 @@ vec4 calcFlashLight(vec4 color, vec4 vertex_view, vec3 normal, int offhandHeldIt
 	float cos_specular = dot(N, H);
 	vec3 color_specular = (cos_specular > 0.0) ? vec3(cos_specular * Ks) : vec3(0.0);
 
-	vec4 color_handLight = vec4((color_diffuse + color_specular) * HANDHELDLIGHTCOLOR.rgb, 1.0);
+	vec4 color_handLight = vec4(color_diffuse + color_specular, 1.0);
 
 	// decay in 2 factors: 1st: distance (1/dist), 2nd: angle (cos^n)
-	vec4 finalFlashLight = 0.2 * clampAll4(vec4((color_handLight * (30.0 / length(-vertex_view.xyz)) * (pow((cos_fromEye - COS_FROMEYE_THRESHOLD) / (1.0 - COS_FROMEYE_THRESHOLD), 5.0))).rgb, 1.0), 0.0, 1.0);
+	vec4 finalFlashLight = HANDHELDLIGHTCOLOR * clampAll4(vec4(vec3(color_handLight * 30.0 * pow(1.0 / length(-vertex_view.xyz), 0.5) * pow((cos_fromEye - COS_FROMEYE_THRESHOLD) / (1.0 - COS_FROMEYE_THRESHOLD), 5.0)), 1.0), 0.0, 1.0);
 
-	color *= finalFlashLight;
+	color *= 0.4 * finalFlashLight;
 
 	return color;
 }
