@@ -11,8 +11,8 @@
 #define NUMID_LAVABUCKET 327
 
 #define VEC3_EYEFRONT vec3(0.0, 0.0, 1.0)
-// pi/6 from eye direction
-#define COS_FROMEYE_THRESHOLD 0.866
+// pi/4 from eye direction
+#define COS_FROMEYE_THRESHOLD 0.707
 
 int intMax(int a, int b) {
     return (a > b) ? a : b;
