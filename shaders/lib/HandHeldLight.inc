@@ -51,7 +51,7 @@ vec4 calcHandHeldLight(vec4 color, vec4 vertex_view, vec3 normal, float handLigh
 	// (color_handLight * (handLightLevel * (1.0 / length(-vertex_view.xyz))))
 	vec4 finalHandHeldLight = clampAll4(vec4((color_handLight * clamp(handLightLevel - length(-vertex_view.xyz), 0.0, 15.0) / 15.0).rgb, 1.0), 0.0, 1.0);
 
-	color *= finalHandHeldLight;
+	color *= 0.6 * finalHandHeldLight;
 
 	return color;
 }
@@ -90,7 +90,7 @@ vec4 calcFlashLight(vec4 color, vec4 vertex_view, vec3 normal, int offhandHeldIt
 	vec4 color_handLight = vec4((color_diffuse + color_specular) * HANDHELDLIGHTCOLOR.rgb, 1.0);
 
 	// decay in 2 factors: 1st: distance (1/dist), 2nd: angle (cos^n)
-	vec4 finalFlashLight = clampAll4(vec4((color_handLight * (30.0 / length(-vertex_view.xyz)) * (pow((cos_fromEye - COS_FROMEYE_THRESHOLD) / (1.0 - COS_FROMEYE_THRESHOLD), 5.0))).rgb, 1.0), 0.0, 1.0);
+	vec4 finalFlashLight = 0.2 * clampAll4(vec4((color_handLight * (30.0 / length(-vertex_view.xyz)) * (pow((cos_fromEye - COS_FROMEYE_THRESHOLD) / (1.0 - COS_FROMEYE_THRESHOLD), 5.0))).rgb, 1.0), 0.0, 1.0);
 
 	color *= finalFlashLight;
 
