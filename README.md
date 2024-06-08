@@ -21,11 +21,12 @@ PS.: The shaderpack is develop under the environment of Java edition 1.12.2 (Opt
 
 ## Features  
 
+周民恩
 * Hand-held lighting ("Light Fairy"):  
 When player holds a lighting cube in either of hands, camera becomes an additional light source to illuminate the blocks around.  
 
+張凱瑞
 * Shadow:  
 When an entity or a block is illuminated by the sun or the moon, a shadow is created on the ground. In addition, If the entity or block is transparent, a colored shadow is created.
-
 * Tonemapping:  
 We use the Uncharted 2 tonemap method to tonemap the HDR frame.
